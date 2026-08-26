@@ -96,6 +96,50 @@ def update_material(
 
     return material
 
+@router.get("/search")
+def search_materials(
+    search: str = "",
+    page: int = 1,
+    limit: int = 10,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if page < 1:
+        raise HTTPException(
+            status_code=400,
+            detail="Page must be greater than 0"
+        )
+
+    if limit < 1 or limit > 100:
+        raise HTTPException(
+            status_code=400,
+            detail="Limit must be between 1 and 100"
+        )
+
+    query = db.query(Material)
+
+    if search:
+        query = query.filter(
+            Material.name.ilike(f"%{search}%")
+        )
+
+    total = query.count()
+
+    materials = (
+        query
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .all()
+    )
+
+    return {
+        "data": materials,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_pages": (total + limit - 1) // limit
+    }
+
 
 @router.delete("/{material_id}")
 def delete_material(
