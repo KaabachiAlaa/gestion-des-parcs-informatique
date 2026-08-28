@@ -9,14 +9,17 @@ const variantClasses: Record<string, string> = {
 }
 
 export function StatusBadge({
-  label,
-  variant = "muted",
+  value,
+  labels,
+  variants,
   className,
 }: {
-  label: string
-  variant?: string
+  value: string
+  labels: Record<string, string>
+  variants?: Record<string, string>
   className?: string
 }) {
+  const variant = variants?.[value] ?? "muted"
   return (
     <span
       className={cn(
@@ -25,7 +28,7 @@ export function StatusBadge({
         className
       )}
     >
-      {label}
+      {labels[value] ?? value}
     </span>
   )
 }

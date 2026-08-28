@@ -80,16 +80,18 @@ export function Sidebar() {
             </span>
           </div>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={logout}
-                aria-label="Se déconnecter"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-white"
-              >
-                <LogOut className="size-4" />
-              </button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <button
+                  type="button"
+                  onClick={logout}
+                  aria-label="Se déconnecter"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-white"
+                >
+                  <LogOut className="size-4" />
+                </button>
+              }
+            />
             <TooltipContent>Se déconnecter</TooltipContent>
           </Tooltip>
         </div>

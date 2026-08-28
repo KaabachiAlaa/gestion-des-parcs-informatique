@@ -50,12 +50,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b border-border bg-card px-4 sm:px-6">
       <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="md:hidden">
-            <Menu className="size-4" />
-            <span className="sr-only">Ouvrir le menu</span>
-          </Button>
-        </SheetTrigger>
+        <SheetTrigger
+          render={
+            <Button variant="outline" size="icon" className="md:hidden">
+              <Menu className="size-4" />
+              <span className="sr-only">Ouvrir le menu</span>
+            </Button>
+          }
+        />
         <SheetContent side="left" className="w-64 bg-sidebar p-0 text-sidebar-foreground">
           <SheetHeader className="border-b border-sidebar-border px-5 py-5 text-left">
             <SheetTitle className="flex items-center gap-3 text-white">
@@ -114,9 +116,7 @@ export function Header() {
         <Breadcrumb className="hidden sm:block">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/dashboard">Accueil</Link>
-              </BreadcrumbLink>
+              <BreadcrumbLink render={<Link href="/dashboard">Accueil</Link>} />
             </BreadcrumbItem>
             {crumbs.map((crumb, index) => (
               <span key={crumb.href} className="flex items-center gap-1.5">
@@ -125,9 +125,9 @@ export function Header() {
                   {index === crumbs.length - 1 ? (
                     <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                   ) : (
-                    <BreadcrumbLink asChild>
-                      <Link href={crumb.href}>{crumb.label}</Link>
-                    </BreadcrumbLink>
+                    <BreadcrumbLink
+                      render={<Link href={crumb.href}>{crumb.label}</Link>}
+                    />
                   )}
                 </BreadcrumbItem>
               </span>

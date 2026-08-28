@@ -280,8 +280,9 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell>
                         <StatusBadge
-                          label={repairStatusLabels[r.status] ?? r.status}
-                          variant={repairStatusVariants[r.status]}
+                          value={r.status}
+                          labels={repairStatusLabels}
+                          variants={repairStatusVariants}
                         />
                       </TableCell>
                     </TableRow>
@@ -329,8 +330,9 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell>
                         <StatusBadge
-                          label={requestStatusLabels[r.status] ?? r.status}
-                          variant={requestStatusVariants[r.status]}
+                          value={r.status}
+                          labels={requestStatusLabels}
+                          variants={requestStatusVariants}
                         />
                       </TableCell>
                     </TableRow>
