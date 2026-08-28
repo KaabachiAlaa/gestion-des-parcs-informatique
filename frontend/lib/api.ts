@@ -84,17 +84,27 @@ export const requestsApi = {
     apiFetch<{ message: string }>(`/requests/${id}`, { method: "DELETE" }),
 }
 
+export type UserInput = {
+  username: string
+  first_name: string
+  last_name: string
+  email: string
+  role_id: number
+  password: string
+}
+
 export const usersApi = {
   list: () => apiFetch<User[]>("/users/"),
   get: (id: number) => apiFetch<User>(`/users/${id}`),
-  create: (data: {
-    username: string
-    first_name: string
-    last_name: string
-    email: string
-    role_id: number
-    password: string
-  }) => apiFetch<User>("/users/", { method: "POST", body: data }),
+  create: (data: UserInput) =>
+    apiFetch<User>("/users/", { method: "POST", body: data }),
+  update: (id: number, data: Partial<UserInput>) =>
+    apiFetch<User>(`/users/${id}`, { method: "PUT", body: data }),
+  setStatus: (id: number, is_active: boolean) =>
+    apiFetch<User>(`/users/${id}/status`, {
+      method: "PATCH",
+      body: { is_active },
+    }),
   delete: (id: number) =>
     apiFetch<{ message: string }>(`/users/${id}`, { method: "DELETE" }),
   search: (params: { search?: string; page?: number; limit?: number }) =>
