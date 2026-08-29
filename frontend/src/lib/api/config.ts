@@ -6,8 +6,8 @@
  *
  * Remarques importantes sur le backend :
  *  - Les endpoints de collection utilisent un slash final (`/materials/`).
- *  - Il n'existe pas d'endpoint `/auth/me` : l'utilisateur courant est résolu
- *    à partir du JWT (voir lib/auth/auth-context.tsx).
+ *  - L'utilisateur courant est résolu via `GET /auth/me` (profil + rôle),
+ *    endpoint ajouté au backend pour prendre en charge tous les rôles.
  *  - Les routes `/materials/search` et `/users/search` sont masquées par les
  *    routes `/{id}` déclarées avant elles dans le backend ; la recherche et la
  *    pagination sont donc réalisées côté client à partir des listes complètes.
@@ -19,6 +19,7 @@ export const API_BASE_URL =
 export const API_ROUTES = {
   auth: {
     login: "/auth/login",
+    me: "/auth/me",
   },
   materials: {
     root: "/materials/",

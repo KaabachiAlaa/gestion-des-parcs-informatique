@@ -56,6 +56,11 @@ export interface BackendUser {
   is_active: boolean
 }
 
+/** Réponse de `GET /auth/me` : profil de l'utilisateur courant + nom du rôle. */
+export interface BackendMe extends BackendUser {
+  role_name: string
+}
+
 export interface BackendMaterial {
   id: number
   asset_code: string
