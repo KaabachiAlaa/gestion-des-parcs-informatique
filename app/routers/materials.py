@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from app.security.dependencies import get_current_user,require_role
 from app.database.connection import get_db
@@ -9,6 +9,7 @@ from app.schemas.material import (
     MaterialResponse,
     MaterialUpdate
 )
+import pandas as pd
 
 
 router = APIRouter(
@@ -161,3 +162,63 @@ def delete_material(
     db.commit()
 
     return {"message": "Material deleted successfully"}
+
+@router.post("/import")
+def import_materials(
+    file: UploadFile = File(...),
+    current_user: User = Depends(require_role("Admin","Technicien")),
+    db: Session = Depends(get_db)
+):
+    # Check file extension
+    if not file.filename.endswith(".xlsx"):
+        raise HTTPException(
+            status_code=400,
+            detail="Only .xlsx files are allowed"
+        )
+
+    try:
+        # Read Excel file
+        df = pd.read_excel(file.file)
+
+        # Check that the file is not empty
+        if df.empty:
+            raise HTTPException(
+                status_code=400,
+                detail="Excel file is empty"
+            )
+
+        imported_materials = []
+
+        for _, row in df.iterrows():
+
+            material = Material(
+                name=row["name"],
+                serial_number=row["serial_number"],
+                # add your other fields here
+            )
+
+            db.add(material)
+            imported_materials.append(material)
+
+        db.commit()
+
+        return {
+            "message": "Materials imported successfully",
+            "count": len(imported_materials)
+        }
+
+    except KeyError as e:
+        db.rollback()
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"Missing column in Excel file: {e}"
+        )
+
+    except Exception as e:
+        db.rollback()
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error importing Excel file: {str(e)}"
+        )
