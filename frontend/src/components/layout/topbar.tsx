@@ -1,6 +1,6 @@
 "use client"
 
-import { Menu, LogOut, ChevronsUpDown, ShieldCheck } from "lucide-react"
+import { Menu, LogOut, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -14,14 +14,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/lib/auth/auth-context"
 import { SidebarContent } from "./sidebar"
-import type { RoleName } from "@/types"
 
 function initials(name: string) {
   return name
@@ -54,36 +51,11 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Sélecteur de rôle — outil de démonstration RBAC */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="hidden gap-2 sm:flex">
-              <ShieldCheck className="size-4 text-primary" />
-              <span className="text-xs text-muted-foreground">Rôle :</span>
-              <span className="font-medium">{user.role.name}</span>
-              <ChevronsUpDown className="size-3.5 text-muted-foreground" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-              Aperçu par rôle (démo)
-            </DropdownMenuLabel>
-            <DropdownMenuRadioGroup
-              value={user.role.name}
-              onValueChange={(v) => switchRole(v as RoleName)}
-            >
-              <DropdownMenuRadioItem value="Administrateur">
-                Administrateur
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="Technicien">
-                Technicien
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="Consultant">
-                Consultant
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="hidden items-center gap-2 rounded-md border border-border px-3 py-1.5 sm:flex">
+          <ShieldCheck className="size-4 text-primary" />
+          <span className="text-xs text-muted-foreground">Rôle :</span>
+          <span className="text-sm font-medium">{user.role.name}</span>
+        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

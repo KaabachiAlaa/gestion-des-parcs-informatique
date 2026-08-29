@@ -38,6 +38,44 @@ export function clearToken() {
   window.localStorage.removeItem(AUTH_TOKEN_KEY)
 }
 
+/** Décode (sans vérifier la signature) le payload d'un JWT. */
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const part = token.split(".")[1]
+    if (!part) return null
+    const base64 = part.replace(/-/g, "+").replace(/_/g, "/")
+    const json = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => `%${("00" + c.charCodeAt(0).toString(16)).slice(-2)}`)
+        .join(""),
+    )
+    return JSON.parse(json) as Record<string, unknown>
+  } catch {
+    return null
+  }
+}
+
+/** Identifiant de l'utilisateur courant, extrait du claim `sub` du JWT. */
+export function getCurrentUserId(): number | null {
+  const token = getToken()
+  if (!token) return null
+  const payload = decodeJwtPayload(token)
+  const sub = payload?.sub
+  const id = typeof sub === "string" ? Number(sub) : typeof sub === "number" ? sub : NaN
+  return Number.isFinite(id) ? id : null
+}
+
+/** true si le token est absent ou expiré (claim `exp`). */
+export function isTokenExpired(): boolean {
+  const token = getToken()
+  if (!token) return true
+  const payload = decodeJwtPayload(token)
+  const exp = payload?.exp
+  if (typeof exp !== "number") return false
+  return Date.now() >= exp * 1000
+}
+
 /** Extrait un message lisible depuis le corps d'erreur FastAPI. */
 function extractDetail(details: unknown): string | null {
   if (!details || typeof details !== "object") return null

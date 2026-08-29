@@ -10,12 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/lib/auth/auth-context"
 
-const demoAccounts = [
-  { role: "Administrateur", username: "a.kaabachi" },
-  { role: "Technicien", username: "s.benali" },
-  { role: "Consultant", username: "l.hamdi" },
-]
-
 export default function LoginPage() {
   const { user, isLoading, login } = useAuth()
   const router = useRouter()
@@ -156,30 +150,6 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          <div className="rounded-lg border border-border bg-muted/40 p-4">
-            <p className="mb-2 text-xs font-medium text-muted-foreground">
-              Comptes de démonstration (mot de passe libre) :
-            </p>
-            <div className="space-y-1.5">
-              {demoAccounts.map((acc) => (
-                <button
-                  key={acc.username}
-                  type="button"
-                  onClick={() => {
-                    setUsername(acc.username)
-                    setPassword("demo")
-                  }}
-                  className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors hover:bg-background"
-                >
-                  <span className="font-medium">{acc.role}</span>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {acc.username}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>

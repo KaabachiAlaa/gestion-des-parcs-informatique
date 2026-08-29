@@ -21,7 +21,7 @@ export type Permission =
   | "dashboard.read"
 
 const ROLE_PERMISSIONS: Record<RoleName, Permission[]> = {
-  Administrateur: [
+  Admin: [
     "materials.read",
     "materials.write",
     "materials.delete",
@@ -59,7 +59,7 @@ export function can(role: RoleName | undefined, permission: Permission): boolean
 
 export function roleBadgeVariant(role: RoleName): "primary" | "info" | "muted" {
   switch (role) {
-    case "Administrateur":
+    case "Admin":
       return "primary"
     case "Technicien":
       return "info"

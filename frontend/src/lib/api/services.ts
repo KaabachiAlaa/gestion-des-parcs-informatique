@@ -29,7 +29,14 @@ import type {
   UserCreateInput,
   UserUpdateInput,
 } from "@/types"
-import { apiFetch, ApiError, getCurrentUserId } from "./client"
+import type { LoginInput } from "@/types"
+import {
+  apiFetch,
+  ApiError,
+  clearToken,
+  getCurrentUserId,
+  setToken,
+} from "./client"
 import { API_ROUTES } from "./config"
 import {
   emptyRefMaps,
@@ -90,6 +97,48 @@ function matches(term: string, ...fields: (string | null | undefined)[]) {
   const t = term.trim().toLowerCase()
   if (!t) return true
   return fields.some((f) => (f ?? "").toLowerCase().includes(t))
+}
+
+/* ------------------------------------------------------------------ */
+/* Authentification                                                    */
+/* ------------------------------------------------------------------ */
+
+interface TokenResponse {
+  access_token: string
+  token_type: string
+}
+
+export const authService = {
+  /** Authentifie l'utilisateur et stocke le token, puis renvoie son profil. */
+  async login(input: LoginInput): Promise<User> {
+    const res = await apiFetch<TokenResponse>(API_ROUTES.auth.login, {
+      method: "POST",
+      auth: false,
+      body: { username: input.username, password: input.password },
+    })
+    if (!res?.access_token) {
+      throw new ApiError(500, "Réponse d'authentification invalide.")
+    }
+    setToken(res.access_token)
+    try {
+      return await authService.me()
+    } catch (e) {
+      // Si /auth/me échoue, on évite de laisser un token orphelin.
+      clearToken()
+      throw e
+    }
+  },
+
+  /** Profil de l'utilisateur courant (résout le nom du rôle via /roles). */
+  async me(): Promise<User> {
+    const roles = await loadRolesMap()
+    const dto = await apiFetch<UserDTO>(API_ROUTES.auth.me)
+    return toUser(dto, roles)
+  },
+
+  logout() {
+    clearToken()
+  },
 }
 
 /* ------------------------------------------------------------------ */
