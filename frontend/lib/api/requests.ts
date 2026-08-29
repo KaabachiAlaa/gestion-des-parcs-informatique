@@ -54,6 +54,24 @@ export async function getRequest(id: number): Promise<ServiceRequest | undefined
   return delay(requests.find((r) => r.id === id));
 }
 
+export async function createRequest(
+  input: Pick<ServiceRequest, "type" | "title" | "description" | "priority" | "created_by">,
+): Promise<ServiceRequest> {
+  const now = new Date().toISOString();
+  const created: ServiceRequest = {
+    ...input,
+    id: Math.max(0, ...requests.map((r) => r.id)) + 1,
+    code: `DEM-${String(Math.max(0, ...requests.map((r) => r.id)) + 1).padStart(4, "0")}`,
+    status: "OUVERTE",
+    assigned_to: null,
+    resolution_notes: null,
+    created_at: now,
+    updated_at: now,
+  };
+  requests = [created, ...requests];
+  return delay(created);
+}
+
 export async function updateRequest(
   id: number,
   input: Partial<ServiceRequest>,
