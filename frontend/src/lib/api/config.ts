@@ -1,7 +1,16 @@
 /**
  * Configuration centrale de l'API.
- * L'URL de base pointe vers le backend FastAPI existant.
- * L'intégration réelle sera effectuée ultérieurement.
+ *
+ * Les routes correspondent EXACTEMENT aux endpoints exposés par le backend
+ * FastAPI existant (voir /app/routers). Aucune route n'est inventée.
+ *
+ * Remarques importantes sur le backend :
+ *  - Les endpoints de collection utilisent un slash final (`/materials/`).
+ *  - Il n'existe pas d'endpoint `/auth/me` : l'utilisateur courant est résolu
+ *    à partir du JWT (voir lib/auth/auth-context.tsx).
+ *  - Les routes `/materials/search` et `/users/search` sont masquées par les
+ *    routes `/{id}` déclarées avant elles dans le backend ; la recherche et la
+ *    pagination sont donc réalisées côté client à partir des listes complètes.
  */
 
 export const API_BASE_URL =
@@ -10,39 +19,34 @@ export const API_BASE_URL =
 export const API_ROUTES = {
   auth: {
     login: "/auth/login",
-    me: "/auth/me",
   },
   materials: {
-    root: "/materials",
-    search: "/materials/search",
+    root: "/materials/",
     byId: (id: number) => `/materials/${id}`,
-    importExcel: "/materials/import",
   },
   repairs: {
-    root: "/repairs",
-    search: "/repairs/search",
+    root: "/repairs/",
     byId: (id: number) => `/repairs/${id}`,
-    byMaterial: (materialId: number) => `/repairs/material/${materialId}`,
   },
   users: {
-    root: "/users",
-    search: "/users/search",
+    root: "/users/",
     byId: (id: number) => `/users/${id}`,
   },
   requests: {
-    root: "/requests",
-    search: "/requests/search",
+    root: "/requests/",
     byId: (id: number) => `/requests/${id}`,
   },
   roles: {
-    root: "/roles",
+    root: "/roles/",
   },
   categories: {
-    root: "/categories",
+    root: "/categories/",
   },
   locations: {
-    root: "/locations",
+    root: "/locations/",
   },
 } as const
 
+/** Clés de stockage local. */
 export const AUTH_TOKEN_KEY = "comet_gpi_token"
+export const AUTH_SESSION_KEY = "comet_gpi_session"
