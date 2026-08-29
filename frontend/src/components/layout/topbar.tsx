@@ -30,7 +30,7 @@ function initials(name: string) {
 }
 
 export function Topbar() {
-  const { user, logout, switchRole } = useAuth()
+  const { user, logout } = useAuth()
   if (!user) return null
 
   return (

@@ -93,7 +93,7 @@ export function RequestPriorityBadge({
 }
 
 const roleTone: Record<RoleName, Tone> = {
-  Administrateur: "primary",
+  Admin: "primary",
   Technicien: "info",
   Consultant: "neutral",
 }
