@@ -19,7 +19,11 @@ export interface PaginatedResponse<T> {
 /* Rôles & Utilisateurs                                                */
 /* ------------------------------------------------------------------ */
 
-export type RoleName = "Administrateur" | "Technicien" | "Consultant"
+/**
+ * Nom de rôle tel que renvoyé par le backend FastAPI (table `roles`).
+ * Le backend utilise ces libellés exacts dans `require_role(...)`.
+ */
+export type RoleName = "Admin" | "Technicien" | "Consultant"
 
 export interface Role {
   id: number
@@ -31,10 +35,14 @@ export interface User {
   id: number
   username: string
   email: string
+  /** Composé côté client à partir de first_name + last_name du backend. */
   full_name: string
+  first_name?: string
+  last_name?: string
   is_active: boolean
   role: Role
-  created_at: string
+  /** Le backend ne renvoie pas de date de création pour les utilisateurs. */
+  created_at?: string | null
 }
 
 export interface UserCreateInput {
@@ -92,8 +100,10 @@ export interface Material {
   assigned_to?: User | null
   purchase_date?: string | null
   warranty_end?: string | null
+  purchase_price?: number | null
   notes?: string | null
-  created_at: string
+  /** Le backend ne renvoie pas de date de création pour les matériels. */
+  created_at?: string | null
 }
 
 export interface MaterialCreateInput {
@@ -167,6 +177,7 @@ export type RequestPriority = "Basse" | "Normale" | "Haute" | "Urgente"
 
 export interface SupportRequest {
   id: number
+  request_code?: string
   type: RequestType
   title: string
   description: string
@@ -174,7 +185,9 @@ export interface SupportRequest {
   priority: RequestPriority
   requested_by: Pick<User, "id" | "full_name">
   material?: Pick<Material, "id" | "inventory_number" | "name"> | null
-  created_at: string
+  /** Le backend ne renvoie pas de date de création pour les demandes. */
+  created_at?: string | null
+  closed_at?: string | null
   updated_at?: string | null
 }
 

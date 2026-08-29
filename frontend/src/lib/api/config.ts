@@ -1,7 +1,10 @@
 /**
  * Configuration centrale de l'API.
  * L'URL de base pointe vers le backend FastAPI existant.
- * L'intégration réelle sera effectuée ultérieurement.
+ *
+ * Les chemins ci-dessous correspondent EXACTEMENT aux routes déclarées par le
+ * backend (voir /app/routers/*). Les routes de collection se terminent par "/"
+ * pour coller au préfixe FastAPI et éviter une redirection 307.
  */
 
 export const API_BASE_URL =
@@ -13,35 +16,30 @@ export const API_ROUTES = {
     me: "/auth/me",
   },
   materials: {
-    root: "/materials",
-    search: "/materials/search",
+    root: "/materials/",
     byId: (id: number) => `/materials/${id}`,
     importExcel: "/materials/import",
   },
   repairs: {
-    root: "/repairs",
-    search: "/repairs/search",
+    root: "/repairs/",
     byId: (id: number) => `/repairs/${id}`,
-    byMaterial: (materialId: number) => `/repairs/material/${materialId}`,
   },
   users: {
-    root: "/users",
-    search: "/users/search",
+    root: "/users/",
     byId: (id: number) => `/users/${id}`,
   },
   requests: {
-    root: "/requests",
-    search: "/requests/search",
+    root: "/requests/",
     byId: (id: number) => `/requests/${id}`,
   },
   roles: {
-    root: "/roles",
+    root: "/roles/",
   },
   categories: {
-    root: "/categories",
+    root: "/categories/",
   },
   locations: {
-    root: "/locations",
+    root: "/locations/",
   },
 } as const
 
