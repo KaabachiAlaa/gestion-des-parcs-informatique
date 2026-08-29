@@ -27,13 +27,15 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-svh bg-background">
-      <aside className="hidden w-64 shrink-0 lg:block">
+      <aside className="hidden w-64 shrink-0 lg:block no-print">
         <div className="fixed inset-y-0 w-64">
           <SidebarContent />
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar />
+        <div className="no-print">
+          <Topbar />
+        </div>
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <div className="mx-auto max-w-7xl space-y-6">{children}</div>
         </main>

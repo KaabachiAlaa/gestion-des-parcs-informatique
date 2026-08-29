@@ -184,13 +184,23 @@
 }
 
 /* Print-friendly layout for repair history */
+.print-only {
+  display: none;
+}
+
 @media print {
   .no-print {
     display: none !important;
   }
+  .print-only {
+    display: block !important;
+  }
   .print-container {
     padding: 0 !important;
     margin: 0 !important;
+  }
+  main {
+    padding: 0 !important;
   }
   body {
     background: #fff !important;

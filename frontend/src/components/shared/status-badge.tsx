@@ -4,6 +4,8 @@ import type {
   RepairStatus,
   RequestPriority,
   RequestStatus,
+  RequestType,
+  RoleName,
 } from "@/types"
 
 type Tone = "success" | "warning" | "danger" | "info" | "neutral" | "primary"
@@ -88,4 +90,33 @@ export function RequestPriorityBadge({
   priority: RequestPriority
 }) {
   return <Pill tone={priorityTone[priority]}>{priority}</Pill>
+}
+
+const roleTone: Record<RoleName, Tone> = {
+  Administrateur: "primary",
+  Technicien: "info",
+  Consultant: "neutral",
+}
+
+export function RoleBadge({ role }: { role: RoleName }) {
+  return <Pill tone={roleTone[role]}>{role}</Pill>
+}
+
+const requestTypeTone: Record<RequestType, Tone> = {
+  Support: "info",
+  Intervention: "warning",
+  Achat: "primary",
+}
+
+export function RequestTypeBadge({ type }: { type: RequestType }) {
+  return <Pill tone={requestTypeTone[type]}>{type}</Pill>
+}
+
+/** Badge actif/inactif pour les utilisateurs. */
+export function ActiveBadge({ active }: { active: boolean }) {
+  return (
+    <Pill tone={active ? "success" : "neutral"}>
+      {active ? "Actif" : "Inactif"}
+    </Pill>
+  )
 }
