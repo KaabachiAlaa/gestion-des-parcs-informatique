@@ -53,6 +53,7 @@ import {
   toRequest,
   toRole,
   toUser,
+  userUpdateToDTO,
   type CategoryDTO,
   type LocationDTO,
   type MaterialDTO,
@@ -402,20 +403,20 @@ export const usersService = {
     await apiFetch(API_ROUTES.users.byId(id), { method: "DELETE" })
   },
 
-  // Le backend n'expose pas de mise à jour ni d'activation/désactivation
-  // d'utilisateur. Ces fonctions signalent explicitement la limitation.
-  async update(_id: number, _input: UserUpdateInput): Promise<void> {
-    throw new ApiError(
-      405,
-      "La modification d'un utilisateur n'est pas prise en charge par le backend.",
-    )
+  /** Met à jour n'importe quel champ de l'utilisateur via PUT /users/{id}. */
+  async update(id: number, input: UserUpdateInput): Promise<void> {
+    await apiFetch(API_ROUTES.users.byId(id), {
+      method: "PUT",
+      body: userUpdateToDTO(input),
+    })
   },
 
-  async toggleActive(_id: number, _active: boolean): Promise<void> {
-    throw new ApiError(
-      405,
-      "L'activation/désactivation d'un compte n'est pas prise en charge par le backend.",
-    )
+  /** Active ou désactive un compte (mise à jour partielle de is_active). */
+  async toggleActive(id: number, active: boolean): Promise<void> {
+    await apiFetch(API_ROUTES.users.byId(id), {
+      method: "PUT",
+      body: { is_active: active },
+    })
   },
 }
 

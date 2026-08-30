@@ -30,6 +30,7 @@ import type {
   RoleName,
   SupportRequest,
   User,
+  UserUpdateInput,
 } from "@/types"
 
 /* ------------------------------------------------------------------ */
@@ -497,6 +498,25 @@ export function requestCreateToDTO(
     priority: priorityToCode(input.priority as string),
     status: "OPEN",
   }
+}
+
+export function userUpdateToDTO(
+  input: UserUpdateInput,
+): Record<string, unknown> {
+  const out: Record<string, unknown> = {}
+  if (input.full_name !== undefined) {
+    const { first_name, last_name } = splitFullName(input.full_name)
+    out.first_name = first_name
+    out.last_name = last_name
+  }
+  if (input.username !== undefined) out.username = input.username
+  if (input.email !== undefined) out.email = input.email
+  if (input.role_id !== undefined) out.role_id = input.role_id
+  if (input.is_active !== undefined) out.is_active = input.is_active
+  // N'envoie le mot de passe que s'il est réellement renseigné.
+  if (input.password !== undefined && input.password.trim() !== "")
+    out.password = input.password
+  return out
 }
 
 /** Sépare un nom complet en prénom / nom pour le backend. */

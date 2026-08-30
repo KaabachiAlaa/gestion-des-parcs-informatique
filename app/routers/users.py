@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.database.models.User import User
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserResponse, UserUpdate
 from app.security.password import hash_password
 from app.security.dependencies import require_role,get_current_user
 
@@ -109,6 +109,66 @@ def search_users(
         "total": total,
         "total_pages": (total + limit - 1) // limit
     }
+
+
+@router.put("/{user_id}", response_model=UserResponse)
+def update_user(
+    user_id: int,
+    user_data: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("Admin"))
+):
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    update_data = user_data.model_dump(exclude_unset=True)
+
+    # Vérifie l'unicité du nom d'utilisateur si modifié.
+    new_username = update_data.get("username")
+    if new_username and new_username != user.username:
+        exists = db.query(User).filter(
+            User.username == new_username,
+            User.id != user_id
+        ).first()
+        if exists:
+            raise HTTPException(
+                status_code=409,
+                detail="A user with this username already exists"
+            )
+
+    # Vérifie l'unicité de l'email si modifié.
+    new_email = update_data.get("email")
+    if new_email and new_email != user.email:
+        exists = db.query(User).filter(
+            User.email == new_email,
+            User.id != user_id
+        ).first()
+        if exists:
+            raise HTTPException(
+                status_code=409,
+                detail="A user with this email already exists"
+            )
+
+    # Hash le mot de passe uniquement s'il est fourni (non vide).
+    if "password" in update_data:
+        password = update_data.pop("password")
+        if password:
+            user.password_hash = hash_password(password)
+
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    db.commit()
+    db.refresh(user)
+
+    return user
 
 
 @router.delete("/{user_id}")
